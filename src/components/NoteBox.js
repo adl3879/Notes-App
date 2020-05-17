@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid black",
     padding: 16,
   },
-  item: {   
+  item: {
     backgroundOpacity: 0.5,
     padding: "2px 10px",
     borderRadius: 20,
