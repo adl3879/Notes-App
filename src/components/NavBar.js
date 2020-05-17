@@ -10,7 +10,6 @@ import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 
 //MUI ICONs
 import BackIcon from "@material-ui/icons/ArrowBack";
@@ -25,6 +24,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import ClearIcon from "@material-ui/icons/Close";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import BellIcon from "@material-ui/icons/NotificationsOutlined";
+import ExitIcon from "@material-ui/icons/Close";
 
 //SCROLL
 import ElevationScroll from "./ElevationScroll";
@@ -148,143 +148,141 @@ function NavBar(props) {
   return (
     <div
       style={{
-        position: "absolute", 
+        position: "absolute",
         zIndex:
           props.edit || props.trashMode || props.archiveMode ? 0 : "initial",
       }}
     >
       {props.route !== "search" ? (
-        <ClickAwayListener onClickAway={props.handleDrawerClose}>
-          <div className={classes.root}>
-            <CssBaseline />
-            <ElevationScroll>
-              <AppBar
-                position="fixed"
-                color="inherit"
-                style={{ borderBottom: "1px solid #DADCE0" }}
-              >
-                <Toolbar>
+        <div className={classes.root}>
+          <CssBaseline />
+          <ElevationScroll>
+            <AppBar
+              position="fixed"
+              color="inherit"
+              style={{ borderBottom: "1px solid #DADCE0" }}
+            >
+              <Toolbar>
+                <IconButton
+                  style={{ color: "#4B4F51" }}
+                  onClick={props.handleDrawerOpen}
+                  edge="start"
+                >
+                  <MenuIcon fontSize="inherit" style={{ fontSize: 27 }} />
+                </IconButton>
+                <Typography variant="h4" className={classes.notes}>
+                  {props.route}
+                </Typography>
+                <div className={classes.icons}>
                   <IconButton
                     style={{ color: "#4B4F51" }}
-                    onClick={props.handleDrawerOpen}
-                    edge="start"
+                    onClick={() => props.onRouteChange("search")}
                   >
-                    <MenuIcon fontSize="inherit" style={{ fontSize: 27 }} />
+                    <SearchIcon fontSize="inherit" style={{ fontSize: 27 }} />
                   </IconButton>
-                  <Typography variant="h4" className={classes.notes}>
-                    {props.route}
-                  </Typography>
-                  <div className={classes.icons}>
-                    <IconButton
-                      style={{ color: "#4B4F51" }}
-                      onClick={() => props.onRouteChange("search")}
-                    >
-                      <SearchIcon fontSize="inherit" style={{ fontSize: 27 }} />
-                    </IconButton>
-                    <IconButton style={{ color: "#4B4F51" }}>
-                      <RefreshIcon
-                        fontSize="inherit"
-                        style={{ fontSize: 27 }}
-                      />
-                    </IconButton>
-                  </div>
-                </Toolbar>
-              </AppBar>
-            </ElevationScroll>
-            <Drawer
-              className={classes.drawer}
-              variant="persistent"
-              anchor="left"
-              open={props.open}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              <div className={classes.drawerHeader}>
-                <Typography variant="h4" className={classes.notes}>
-                  Notes
-                </Typography>
-              </div>
-              <div
-                role="presentation"
+                  <IconButton
+                    style={{ color: "#4B4F51" }}
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                  >
+                    <RefreshIcon fontSize="inherit" style={{ fontSize: 27 }} />
+                  </IconButton>
+                </div>
+              </Toolbar>
+            </AppBar>
+          </ElevationScroll>
+          <Drawer
+            className={classes.drawer}
+            variant="persistent"
+            anchor="left"
+            open={props.open}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.drawerHeader}>
+              <Typography variant="h4" className={classes.notes}>
+                Notes
+              </Typography>
+              <IconButton
                 onClick={props.handleDrawerClose}
-                onKeyDown={props.handleDrawerClose}
+                style={{ marginLeft: "auto" }}
               >
-                <List>
-                  <ListItem button onClick={() => props.onRouteChange("notes")}>
-                    <ListItemIcon style={{ marginBottom: 13 }}>
-                      <NoteIcon
-                        fontSize="inherit"
-                        className={classes.iconSize}
-                      />
-                    </ListItemIcon>
-                    <Typography className={classes.listText}>Note</Typography>
-                  </ListItem>
-                  <ListItem
-                    button
-                    style={{ marginBottom: 8 }}
-                    onClick={() => props.onRouteChange("reminders")}
-                  >
-                    <ListItemIcon>
-                      <BellIcon
-                        fontSize="inherit"
-                        className={classes.iconSize}
-                      />
-                    </ListItemIcon>
-                    <Typography className={classes.listText}>
-                      Reminders
-                    </Typography>
-                  </ListItem>
-                </List>
+                <ExitIcon />
+              </IconButton>
+            </div>
+            <div
+              role="presentation"
+              onClick={props.handleDrawerClose}
+              onKeyDown={props.handleDrawerClose}
+            >
+              <List>
+                <ListItem button onClick={() => props.onRouteChange("notes")}>
+                  <ListItemIcon style={{ marginBottom: 13 }}>
+                    <NoteIcon fontSize="inherit" className={classes.iconSize} />
+                  </ListItemIcon>
+                  <Typography className={classes.listText}>Note</Typography>
+                </ListItem>
+                <ListItem
+                  button
+                  style={{ marginBottom: 8 }}
+                  onClick={() => props.onRouteChange("reminders")}
+                >
+                  <ListItemIcon>
+                    <BellIcon fontSize="inherit" className={classes.iconSize} />
+                  </ListItemIcon>
+                  <Typography className={classes.listText}>
+                    Reminders
+                  </Typography>
+                </ListItem>
+              </List>
+              <Divider />
+              <List>
+                <ListItem
+                  button
+                  style={{ marginBottom: 13, marginTop: 5 }}
+                  onClick={() => props.onRouteChange("archive")}
+                >
+                  <ListItemIcon>
+                    <ArchiveIcon
+                      fontSize="inherit"
+                      className={classes.iconSize}
+                    />
+                  </ListItemIcon>
+                  <Typography className={classes.listText}>Achive</Typography>
+                </ListItem>
+                <ListItem
+                  button
+                  style={{ marginBottom: 13 }}
+                  onClick={() => props.onRouteChange("trash")}
+                >
+                  <ListItemIcon>
+                    <TrashIcon
+                      fontSize="inherit"
+                      className={classes.iconSize}
+                    />
+                  </ListItemIcon>
+                  <Typography className={classes.listText}>Trash</Typography>
+                </ListItem>
                 <Divider />
-                <List>
-                  <ListItem
-                    button
-                    style={{ marginBottom: 13, marginTop: 5 }}
-                    onClick={() => props.onRouteChange("archive")}
-                  >
-                    <ListItemIcon>
-                      <ArchiveIcon
-                        fontSize="inherit"
-                        className={classes.iconSize}
-                      />
-                    </ListItemIcon>
-                    <Typography className={classes.listText}>Achive</Typography>
-                  </ListItem>
-                  <ListItem
-                    button
-                    style={{ marginBottom: 13 }}
-                    onClick={() => props.onRouteChange("trash")}
-                  >
-                    <ListItemIcon>
-                      <TrashIcon
-                        fontSize="inherit"
-                        className={classes.iconSize}
-                      />
-                    </ListItemIcon>
-                    <Typography className={classes.listText}>Trash</Typography>
-                  </ListItem>
-                  <Divider />
-                  <ListItem
-                    button
-                    style={{ marginTop: 13 }}
-                    onClick={() => props.onRouteChange("settings")}
-                  >
-                    <ListItemIcon>
-                      <SettingsIcon
-                        fontSize="inherit"
-                        className={classes.iconSize}
-                      />
-                    </ListItemIcon>
-                    <Typography className={classes.listText}>
-                      Settings
-                    </Typography>
-                  </ListItem>
-                </List>
-              </div>
-            </Drawer>
-          </div>
-        </ClickAwayListener>
+                <ListItem
+                  button
+                  style={{ marginTop: 13 }}
+                  onClick={() => props.onRouteChange("settings")}
+                >
+                  <ListItemIcon>
+                    <SettingsIcon
+                      fontSize="inherit"
+                      className={classes.iconSize}
+                    />
+                  </ListItemIcon>
+                  <Typography className={classes.listText}>Settings</Typography>
+                </ListItem>
+              </List>
+            </div>
+          </Drawer>
+        </div>
       ) : (
         <div className={classes.root}>
           <CssBaseline />

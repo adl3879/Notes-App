@@ -145,6 +145,7 @@ class Notes extends React.Component {
       handleNotes(notes);
       handleOpen(true);
     }
+    console.log(notes);
     onCollapse();
   };
 
