@@ -1,4 +1,6 @@
 import React from "react";
+
+//MUI
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,6 +13,7 @@ import Divider from "@material-ui/core/Divider";
 import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Avatar from "@material-ui/core/Avatar";
 
 //MUI ICONs
 import BackIcon from "@material-ui/icons/ArrowBack";
@@ -25,9 +28,13 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import ClearIcon from "@material-ui/icons/Close";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import BellIcon from "@material-ui/icons/NotificationsOutlined";
+import ExitIcon from "@material-ui/icons/Close";
 
 //SCROLL
 import ElevationScroll from "./ElevationScroll";
+
+//AVATAR
+import avatar from "../avatar-2.png";
 
 const drawerWidth = 250;
 
@@ -119,6 +126,13 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
+  typography: {
+    fontSize: 20,
+  },
+  avatar: {
+    textTransform: "uppercase",
+    fontSize: 19,
+  },
 }));
 
 function NavBar(props) {
@@ -145,12 +159,18 @@ function NavBar(props) {
     props.onRouteChange("notes");
   };
 
+  let displayName = props.displayName.split("")[0];
+
   return (
     <div
       style={{
-        position: "absolute", 
+        position: "absolute",
         zIndex:
           props.edit || props.trashMode || props.archiveMode ? 0 : "initial",
+        opacity:
+          props.route === "signIn" || props.route === "signUp"
+            ? 0.5
+            : "initial",
       }}
     >
       {props.route !== "search" ? (
@@ -181,11 +201,41 @@ function NavBar(props) {
                     >
                       <SearchIcon fontSize="inherit" style={{ fontSize: 27 }} />
                     </IconButton>
-                    <IconButton style={{ color: "#4B4F51" }}>
+                    <IconButton
+                      style={{ color: "#4B4F51" }}
+                      onClick={() => {
+                        window.location.reload();
+                      }}
+                    >
                       <RefreshIcon
                         fontSize="inherit"
                         style={{ fontSize: 27 }}
                       />
+                    </IconButton>
+                    <IconButton
+                      onClick={(event) => {
+                        if (props.isSignedIn) {
+                          console.log("onlinre");
+                        } else {
+                          props.onRouteChange("signUp");
+                        }
+                      }}
+                    >
+                      {props.isSignedIn ? (
+                        <div>
+                          <Avatar className={classes.avatar}>
+                            {displayName}
+                          </Avatar>
+                        </div>
+                      ) : (
+                        <img
+                          src={avatar}
+                          alt="avatar"
+                          height="38"
+                          width="38"
+                          className="avatar-img"
+                        />
+                      )}
                     </IconButton>
                   </div>
                 </Toolbar>
@@ -204,6 +254,12 @@ function NavBar(props) {
                 <Typography variant="h4" className={classes.notes}>
                   Notes
                 </Typography>
+                <IconButton
+                  onClick={props.handleDrawerClose}
+                  style={{ marginLeft: "auto" }}
+                >
+                  <ExitIcon />
+                </IconButton>
               </div>
               <div
                 role="presentation"
@@ -223,7 +279,7 @@ function NavBar(props) {
                   <ListItem
                     button
                     style={{ marginBottom: 8 }}
-                    onClick={() => props.onRouteChange("reminders")}
+                    onClick={() => props.onRouteChange("reminder")}
                   >
                     <ListItemIcon>
                       <BellIcon
@@ -326,6 +382,23 @@ function NavBar(props) {
                   <IconButton style={{ color: "#4B4F51" }}>
                     <RefreshIcon fontSize="inherit" style={{ fontSize: 27 }} />
                   </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      props.onRouteChange("signIn");
+                    }}
+                  >
+                    {props.isSignedIn ? (
+                      <Avatar>{displayName}</Avatar>
+                    ) : (
+                      <img
+                        src={avatar}
+                        alt="avatar"
+                        height="38"
+                        width="38"
+                        className="avatar-img"
+                      />
+                    )}
+                  </IconButton>
                 </div>
               </Toolbar>
             </AppBar>
@@ -335,4 +408,5 @@ function NavBar(props) {
     </div>
   );
 }
+
 export default NavBar;

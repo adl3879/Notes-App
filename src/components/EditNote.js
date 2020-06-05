@@ -108,6 +108,7 @@ class EditNote extends React.Component {
     super();
     this.state = {
       updatedNote: {
+        id: "",
         title: "",
         content: "",
         pinned: false,
@@ -154,12 +155,34 @@ class EditNote extends React.Component {
     let title = document.getElementById("title").innerText;
     let content = document.getElementById("content").innerText;
 
+    let connection = window.navigator.onLine ? "online" : "offline";
+
     this.props.handleNoteEdit(this.props.note, {
       title: title,
       content: content,
       pinned: this.state.updatedNote.pinned,
       color: this.state.updatedNote.color,
     });
+
+    if (connection === "online") {
+      fetch(`http://localhost:3000/api/notes/update/${content}`, {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          title: title,
+          content: content,
+          pinned: this.state.updatedNote.pinned,
+          color: this.state.updatedNote.color,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+    }
 
     this.props.handleEdit(false);
     this.props.onEdit(false);
@@ -182,6 +205,25 @@ class EditNote extends React.Component {
   handleTrash = (note) => {
     if (note.content) {
       this.props.handleNoteRemove("notes", "trash", note);
+
+      fetch("http://localhost:3000/api/notes/deletenote", {
+        method: "delete",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          title: note.title,
+          content: note.content,
+          pinned: note.pinned,
+          color: note.color,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+        });
+
       this.props.handleEdit(false);
       this.props.onEdit(false);
     }
