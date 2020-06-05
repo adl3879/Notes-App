@@ -7,6 +7,8 @@ import Settings from "./Settings";
 import Trash from "./Trash";
 import NoteCollapse from "./NoteCollapse";
 import Archive from "./Archive";
+import SignIn from "../pages/SignIn";
+import SignUp from "../pages/SignUp";
 
 function Main(props) {
   return (
@@ -59,10 +61,23 @@ function Main(props) {
               trash={props.trash}
               handleArchiveEdit={props.handleArchiveEdit}
             />
-          ) : (
+          ) : props.route === "reminder" ? (
             <div>
               <h2>later...</h2>
             </div>
+          ) : props.route === "signUp" ? (
+            <SignUp
+              onRouteChange={props.onRouteChange}
+              isSignedIn={props.isSignedIn}
+              setDisplay={props.setDisplay}
+            />
+          ) : (
+            <SignIn
+              onRouteChange={props.onRouteChange}
+              isSignedIn={props.isSignedIn}
+              setDisplay={props.setDisplay}
+              getNotes={props.getNotes}
+            />
           )}
         </Container>
       </main>

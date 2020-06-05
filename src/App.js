@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import axios from "axios";
+
 import NavBar from "./components/NavBar";
 import Main from "./components/Main";
 
@@ -9,41 +11,51 @@ class App extends Component {
       route: "notes",
       openDrawer: false,
       searchText: "",
-      notes: [
-        {
-          title: "Welcome to Notes!",
-          content: `So what can you do with this notes app?
-            Well a lot 😜. You can take notes, archive or trash notes when you feel like, pin notes (like this one), perform deep search on notes, set reminders and receive push notification.
-            Other great features are coming in the next release, stay tuned!
-            🔥🔥🔥`,
-          pinned: true,
-          color: "#A7FEEB",
-        },
-        {
-          title: "Taking notes has never felt better!!!",
-          content: `You're gonna enjoy this app, Trust me :)`,
-          pinned: true,
-          color: "",
-        },
-      ],
+      notes: [],
+      trash: [],
+      archive: [],
       search: [],
       editMode: false,
       trashMode: false,
       archiveMode: false,
-      trash: [],
-      archive: [],
+      isSignedIn: false,
+      display: "",
     };
   }
 
   UNSAFE_componentWillMount() {
-    localStorage.getItem("notes" || "trash" || "archive") &&
+    let notes = localStorage.getItem("notes");
+    let trash = localStorage.getItem("trash");
+    let archive = localStorage.getItem("archive");
+
+    if (notes || trash || archive) {
       this.setState({
         ...this.state,
-        notes: JSON.parse(localStorage.getItem("notes")),
-        trash: JSON.parse(localStorage.getItem("trash")),
-        archive: JSON.parse(localStorage.getItem("archive")),
+        notes: JSON.parse(notes),
+        trash: JSON.parse(trash),
+        archive: JSON.parse(archive),
       });
+    } else {
+      this.getNotes();
+    }
   }
+
+  getNotes = () => {
+    axios
+      .get(`http://localhost:3000/api/notes/getall`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((res) => {
+        const notes = res.data;
+        if (notes !== "Auth token is not supplied") {
+          this.setState({
+            notes: [...notes],
+          });
+        } else {
+          return null;
+        }
+      });
+  };
 
   UNSAFE_componentWillUpdate(nextProps, nextState) {
     localStorage.setItem("notes", JSON.stringify(nextState.notes));
@@ -203,6 +215,18 @@ class App extends Component {
     });
   };
 
+  signedIn = (bool) => {
+    this.setState({
+      isSignedIn: bool,
+    });
+  };
+
+  setDisplay = (name) => {
+    this.setState({
+      display: name,
+    });
+  };
+
   render() {
     return (
       <div className="app">
@@ -219,11 +243,14 @@ class App extends Component {
           handleEdit={this.handleEdit}
           trashMode={this.state.trashMode}
           archiveMode={this.state.archiveMode}
+          isSignedIn={this.state.isSignedIn}
+          displayName={this.state.display}
         />
         <Main
           handleDrawerClose={this.handleDrawerClose}
           open={this.state.openDrawer}
           route={this.state.route}
+          onRouteChange={this.onRouteChange}
           handleNotes={this.handleNotes}
           handleNoteRemove={this.handleNoteRemove}
           notes={this.state.notes}
@@ -239,6 +266,9 @@ class App extends Component {
           handleArchiveRestore={this.handleArchiveRestore}
           search={this.state.search}
           handleArchiveEdit={this.handleArchiveEdit}
+          isSignedIn={this.signedIn}
+          setDisplay={this.setDisplay}
+          getNotes={this.getNotes}
         />
       </div>
     );

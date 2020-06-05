@@ -15,8 +15,6 @@ import StarOutlineIcon from "@material-ui/icons/StarBorder";
 
 import Typography from "@material-ui/core/Typography";
 
-//import Thumbtack from "../thumbtack.svg";
-
 const styles = (theme) => ({
   title: {
     border: "none",
@@ -90,7 +88,6 @@ class Notes extends React.Component {
         title: "",
         content: "",
         pinned: false,
-        labels: [],
         color: "",
       },
       openDialog: false,
@@ -141,11 +138,35 @@ class Notes extends React.Component {
   handleSave = () => {
     const { handleNotes, onCollapse, handleOpen } = this.props;
     const { notes } = this.state;
+    const { title, content, pinned, color } = this.state.notes;
+
     if (notes.content) {
-      handleNotes(notes);
+      let connection = window.navigator.onLine ? "online" : "offline";
+
+      if (connection === "online") {
+        fetch("http://localhost:3000/api/notes/addnote", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            title: title,
+            content: content,
+            pinned: pinned,
+            color: color,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data === "success") {
+              this.props.onRouteChange("home");
+            }
+          });
+      }
       handleOpen(true);
+      handleNotes(notes);
     }
-    console.log(notes);
     onCollapse();
   };
 
@@ -200,7 +221,7 @@ class Notes extends React.Component {
     };
 
     return (
-      <div>
+      <div className="fade-in">
         <Paper style={paperStyle.paper} elevation={9}>
           {/* {image ? <img src={image.name} alt="header" /> : null} */}
           <div>
