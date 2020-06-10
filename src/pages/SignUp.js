@@ -57,9 +57,23 @@ function SignUp(props) {
       .then((response) => response.json())
       .then((data) => {
         if (data.message === "User is added successfully") {
+          fetch("http://localhost:3000/api/auth/login", {
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              props.isSignedIn(true);
+              localStorage.setItem("token", data.token);
+              props.setDisplay(data.display);
+              props.getNotes();
+            });
+
           props.onRouteChange("notes");
-          props.isSignedIn(true);
-          props.setDisplay(data.display);
           setExists(false);
         } else {
           console.log("user already exists");
