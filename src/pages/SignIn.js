@@ -58,6 +58,7 @@ function SignIn(props) {
           props.onRouteChange("notes");
           props.isSignedIn(true);
           localStorage.setItem("token", data.token);
+          localStorage.setItem("userId", JSON.stringify(data.userId));
           props.setDisplay(data.display);
           props.getNotes();
           setLogin(false);
@@ -113,6 +114,14 @@ function SignIn(props) {
           >
             signup
           </span>
+        </small>
+        <small
+          onClick={() => {
+            props.onRouteChange("notes");
+          }}
+          style={{ color: "red" }}
+        >
+          cancel
         </small>
       </form>
     </div>

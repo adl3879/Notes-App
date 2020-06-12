@@ -6,6 +6,7 @@ const auth = require("../middleware/auth");
 
 router.post("/addnote", auth, (req, res, next) => {
   const note = new Note({
+    userId: req.body.userId,
     title: req.body.title,
     content: req.body.content,
     pinned: req.body.pinned,
@@ -40,6 +41,7 @@ router.get("/getone", auth, (req, res, next) => {
 router.put("/update/:id", auth, (req, res, next) => {
   const note = new Note({
     _id: req.params.id,
+    userId: req.body.userId,
     title: req.body.title,
     content: req.body.content,
     pinned: req.body.pinned,

@@ -41,16 +41,28 @@ class App extends Component {
   }
 
   getNotes = () => {
+    this.setState({
+      notes: [],
+    });
+
     axios
       .get(`http://localhost:3000/api/notes/getall`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
       .then((res) => {
         const notes = res.data;
-        if (notes !== "Auth token is not supplied") {
-          this.setState({
-            notes: [...notes],
-          });
+        if (notes !== "Token is not valid") {
+          for (let i = 0; i < notes.length; i++) {
+            //feels inefficient but works fineee
+            if (
+              notes.length &&
+              notes[i].userId === JSON.parse(localStorage.getItem("userId"))
+            ) {
+              this.setState({
+                notes: [...this.state.notes, notes[i]],
+              });
+            }
+          }
         } else {
           return null;
         }
@@ -269,6 +281,7 @@ class App extends Component {
           isSignedIn={this.signedIn}
           setDisplay={this.setDisplay}
           getNotes={this.getNotes}
+          signedIn={this.state.isSignedIn}
         />
       </div>
     );

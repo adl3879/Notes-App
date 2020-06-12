@@ -163,7 +163,7 @@ class EditNote extends React.Component {
       pinned: this.state.updatedNote.pinned,
       color: this.state.updatedNote.color,
     });
- 
+
     if (connection === "online") {
       fetch(`http://localhost:3000/api/notes/update/${content}`, {
         method: "put",
@@ -213,6 +213,7 @@ class EditNote extends React.Component {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
+          userId: JSON.parse(localStorage.getItem("userId")),
           title: note.title,
           content: note.content,
           pinned: note.pinned,

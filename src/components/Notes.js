@@ -151,6 +151,7 @@ class Notes extends React.Component {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
+            userId: JSON.parse(localStorage.getItem("userId")),
             title: title,
             content: content,
             pinned: pinned,

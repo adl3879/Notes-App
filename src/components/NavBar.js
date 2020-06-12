@@ -215,9 +215,9 @@ function NavBar(props) {
                     <IconButton
                       onClick={(event) => {
                         if (props.isSignedIn) {
-                          console.log("onlinre");
+                          return null;
                         } else {
-                          props.onRouteChange("signUp");
+                          props.onRouteChange("signIn");
                         }
                       }}
                     >
@@ -388,7 +388,7 @@ function NavBar(props) {
                     }}
                   >
                     {props.isSignedIn ? (
-                      <Avatar>{displayName}</Avatar>
+                      <Avatar className={classes.avatar}>{displayName}</Avatar>
                     ) : (
                       <img
                         src={avatar}
