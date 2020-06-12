@@ -1,6 +1,8 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
 import Toolbar from "@material-ui/core/Toolbar";
+import Slide from "@material-ui/core/Slide";
+import SnackBar from "@material-ui/core/Snackbar";
 
 import Search from "./Search";
 import Settings from "./Settings";
@@ -11,6 +13,17 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 
 function Main(props) {
+  const [open, setOpen] = React.useState(true);
+
+  const [state] = React.useState({
+    open: false,
+    Transition: Slide,
+  });
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div>
       <main>
@@ -28,18 +41,26 @@ function Main(props) {
           ) : props.route === "settings" ? (
             <Settings />
           ) : props.route === "notes" ? (
-            <NoteCollapse
-              notes={props.notes}
-              handleNotes={props.handleNotes}
-              handleNoteRemove={props.handleNoteRemove}
-              handleEdit={props.handleEdit}
-              edit={props.edit}
-              handleNoteEdit={props.handleNoteEdit}
-              openDrawer={props.open}
-              trash={props.trash}
-              archive={props.archive}
-              route={props.route}
-            />
+            <div>
+              <NoteCollapse
+                notes={props.notes}
+                handleNotes={props.handleNotes}
+                handleNoteRemove={props.handleNoteRemove}
+                handleEdit={props.handleEdit}
+                edit={props.edit}
+                handleNoteEdit={props.handleNoteEdit}
+                openDrawer={props.open}
+                trash={props.trash}
+                archive={props.archive}
+                route={props.route}
+              />
+              <SnackBar
+                open={props.signedIn && open ? true : false}
+                onClose={handleClose}
+                TransitionComponent={state.Transition}
+                message="You're welcome back!!!"
+              />
+            </div>
           ) : props.route === "trash" ? (
             <div>
               <Trash
@@ -70,6 +91,7 @@ function Main(props) {
               onRouteChange={props.onRouteChange}
               isSignedIn={props.isSignedIn}
               setDisplay={props.setDisplay}
+              getNotes={props.getNotes}
             />
           ) : (
             <SignIn
